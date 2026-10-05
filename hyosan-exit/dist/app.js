@@ -46,7 +46,15 @@ categoryButtons.forEach((button,i)=>{button.addEventListener('pointerenter',e=>{
 function updateMotion(){document.body.classList.toggle('motion-paused',motionPaused);$('#motion-toggle').textContent=motionPaused?'▷ 모션 재생':'Ⅱ 모션 멈춤';$('#motion-toggle').setAttribute('aria-pressed',String(motionPaused));}
 $('#motion-toggle').addEventListener('click',()=>{motionPaused=!motionPaused;updateMotion();});
 const journalData=[{label:'A SINGLE SOURCE',title:'자료 관리는, Google Sheets로.',copy:'패턴, LPM, 특별넘버, 경면판 자료를 Google Sheets에서 관리합니다. 시트에 정리한 정보는 하나의 백과사전으로 연결되어 PC와 모바일에서 확인할 수 있습니다.',nodes:[['▤','흩어진 자료'],['→',''],['▦','하나의 자료실']]},{label:'CONNECTED KNOWLEDGE',title:'검색 다음에는, 연결.',copy:'패턴에서 LPM으로, LPM에서 경면판으로. 현장에서 적용 스펙으로. 하나의 자료를 찾으면 그다음 필요한 정보로 이어지도록 관계를 연결했습니다.',nodes:[['≋','패턴'],['→',''],['▥','LPM'],['→',''],['▧','경면판']]},{label:'MADE FOR EVERYDAY USE',title:'현장에서 편한 쪽으로.',copy:'휴대폰 홈 화면 추가, 종이번호 복사, 이미지 확대와 영업자료 내보내기. 자주 하는 동작을 다듬고, 캐시와 30분 자동 동기화로 자료를 빠르게 열도록 개선했습니다.',nodes:[['↗','손안의 자료'],['→',''],['⟳','계속 업데이트']]}];let journalIndex=-1;
-function updateJournal(idx){if(idx===journalIndex)return;journalIndex=idx;const d=journalData[idx];$('.journal-large-number').textContent=`0${idx+1}`;$('#journal-label').textContent=d.label;$('#journal-detail-title').textContent=d.title;$('#journal-detail-copy').textContent=d.copy;$('#journal-visual').innerHTML=d.nodes.map(([icon,label],i)=>label?`<div class="data-node ${i===d.nodes.length-1?'highlight':''}"><b>${icon}</b><span>${label}</span></div>`:`<span class="data-arrow">${icon}</span>`).join('');document.querySelectorAll('[data-journal]').forEach(b=>{let active=Number(b.dataset.journal)===idx;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});}
+function updateJournal(idx){
+ if(idx===journalIndex)return;
+ journalIndex=idx;const d=journalData[idx];
+ $('.journal-large-number').textContent=`0${idx+1}`;$('#journal-label').textContent=d.label;$('#journal-detail-title').textContent=d.title;$('#journal-detail-copy').textContent=d.copy;
+ $('.sheets-demo').hidden=idx!==0;$('#journal-connections').hidden=idx!==1;$('#journal-refinement').hidden=idx!==2;
+ if(idx!==0&&$('#sheets-player').getAttribute('aria-pressed')==='true')playSheets(false);
+ document.querySelectorAll('[data-journal]').forEach(b=>{const active=Number(b.dataset.journal)===idx;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+}
+
 document.querySelectorAll('[data-journal]').forEach(b=>b.addEventListener('click',()=>{const idx=Number(b.dataset.journal);if(reduced.matches){updateJournal(idx);return;}const el=$('.journal');scrollTo({top:el.offsetTop+(el.offsetHeight-innerHeight)*(idx/3+.05),behavior:'smooth'});}));
 document.documentElement.classList.add('js-ready');const reveals=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');reveals.unobserve(e.target);}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>reveals.observe(el));
 const demoVisibility=new IntersectionObserver(entries=>{const visible=entries[0].isIntersecting;$('#demo-browser').classList.toggle('offscreen',!visible);},{threshold:0});demoVisibility.observe($('#demo-browser'));
@@ -125,6 +133,8 @@ function renderFinale(){
  $('.closing-reveal').setAttribute('aria-hidden',String(reveal<.9));
  $('.closing-stage').style.background=`rgb(${Math.round(0+zoom*244)} ${Math.round(170+zoom*80)} ${Math.round(104+zoom*140)})`;
  section.classList.toggle('finale-complete',p>.81);
+ if(reveal>.9&&!section.classList.contains('fireworks-fired')){section.classList.add('fireworks-fired');burstFireworks();}
+ if(p<.72){section.classList.remove('fireworks-fired');$('.finale-fireworks').replaceChildren();}
 }
 
 // Local captures only: playback never changes the source spreadsheet.
@@ -137,4 +147,32 @@ document.querySelectorAll('[data-sheet]').forEach(b=>b.addEventListener('click',
 const sheetVisibility=new IntersectionObserver(entries=>{if(!entries[0].isIntersecting)playSheets(false);},{threshold:.1});sheetVisibility.observe($('.sheets-demo'));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)playSheets(false);});
 sheetFrames.forEach(([file])=>{const img=new Image();img.src=`captures/sheets-${file}.jpg`;});
+renderScroll();
+
+// The character advances the story, with a short, deliberately simple cheer.
+let cheerTimer;
+$('#journal-character').addEventListener('click',()=>{
+ const character=$('#journal-character');character.classList.remove('is-cheering');void character.offsetWidth;character.classList.add('is-cheering');
+ clearTimeout(cheerTimer);cheerTimer=setTimeout(()=>character.classList.remove('is-cheering'),850);
+ document.querySelector(`[data-journal="${(journalIndex+1)%3}"]`).click();
+});
+document.querySelectorAll('[data-connection]').forEach(button=>button.addEventListener('click',()=>{
+ const key=button.dataset.connection;
+ const labels={patterns:['패턴','패턴의 특징에서 관련 제품으로.'],lpm:['LPM','제품 정보에서 어울리는 경면판으로.'],emboss:['경면판','표면의 특징까지, 연결해서 확인합니다.']};
+ $('#connection-capture').src=`captures/${key}-detail.jpg`;$('#connection-capture').alt=`실제 앱의 ${labels[key][0]} 상세 화면`;$('#connection-caption').textContent=labels[key][1];
+ document.querySelectorAll('[data-connection]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+}));
+const refinementCopy=['휴대폰 홈 화면에서, 자료실을 바로 엽니다.','종이번호를 복사하고, 필요한 영업자료를 꺼냅니다.','캐시와 30분 자동 동기화로 자료를 빠르게 확인합니다.'];
+document.querySelectorAll('[data-refinement]').forEach(button=>button.addEventListener('click',()=>{
+ $('#refinement-caption').textContent=refinementCopy[Number(button.dataset.refinement)];
+ document.querySelectorAll('[data-refinement]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+}));
+function burstFireworks(){
+ const stage=$('.finale-fireworks');if(!stage||reduced.matches)return;stage.replaceChildren();
+ [22,78].forEach((x,side)=>{
+  const burst=document.createElement('div');burst.className='firework-burst';burst.style.left=x+'%';burst.style.top=(side?39:32)+'%';burst.style.setProperty('--burst-delay',side?'.18s':'0s');
+  for(let i=0;i<14;i++){const piece=document.createElement('i');const a=i/14*Math.PI*2;const radius=58+(i%3)*18;piece.className=i%4===0?'firework-star':'firework-dot';piece.style.setProperty('--x',Math.cos(a)*radius+'px');piece.style.setProperty('--y',Math.sin(a)*radius+'px');piece.style.setProperty('--spin',(i*53)+'deg');burst.append(piece);}
+  stage.append(burst);
+ });
+}
 renderScroll();
