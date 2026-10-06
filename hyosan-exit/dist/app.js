@@ -92,14 +92,13 @@ addEventListener('wheel',event=>{if(event.ctrlKey||event.altKey||Math.abs(event.
 addEventListener('touchstart',e=>{touchStartY=e.touches[0].clientY;clearTimeout(gestureTimer);},{passive:true});
 addEventListener('touchend',e=>{const direction=Math.sign(touchStartY-e.changedTouches[0].clientY);if(!direction)return;clearTimeout(gestureTimer);gestureTimer=setTimeout(()=>{if(slideLocked)return;const destination=slideDestination(direction);if(destination!==null&&Math.abs(destination-scrollY)<innerHeight*.9)slideTo(destination);},220);},{passive:true});
 addEventListener('keydown',e=>{if(e.target.closest('button,a,input,textarea,select,dialog')||e.ctrlKey||e.metaKey||e.altKey)return;const direction=e.key==='PageDown'||(e.key===' '&&!e.shiftKey)?1:e.key==='PageUp'||(e.key===' '&&e.shiftKey)?-1:0;if(!direction)return;const destination=slideDestination(direction);if(destination!==null){e.preventDefault();if(!slideLocked)slideTo(destination);}});
-$('.celebrating-character').setAttribute('viewBox','75 178 130 104');
+
 const exitCharacter=$('.exit-sign svg');exitCharacter.classList.remove('character-still');
 const exitObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('exit-visible',e.isIntersecting)),{threshold:.5});exitObserver.observe($('.exit-sign'));
-// A fixed user-space clip makes the waist a straight cut, including during bobbing.
+// The portrait has its own shoulder pivots; the running rig stays unchanged.
 const portrait=$('.celebrating-character');
-portrait.insertAdjacentHTML('afterbegin','<defs><clipPath id="portrait-waist" clipPathUnits="userSpaceOnUse"><rect x="60" y="155" width="170" height="108"/></clipPath></defs>');
-const portraitClip=document.createElementNS('http://www.w3.org/2000/svg','g');portraitClip.setAttribute('clip-path','url(#portrait-waist)');
-portraitClip.append(portrait.querySelector('.rig-bounce'));portrait.append(portraitClip);
+portrait.setAttribute('viewBox','48 172 182 96');
+portrait.innerHTML='<defs><clipPath id="portrait-waist"><rect x="40" y="165" width="200" height="98"/></clipPath></defs><g clip-path="url(#portrait-waist)"><g class="portrait-body">'+limb('arm','back',125,227,32,11.33,28)+'<circle cx="139" cy="206" r="11"/><path d="M124 232 Q124 219 137 219 H141 Q154 219 154 232 V272 H124Z"/>'+limb('arm','front',153,227,32,11.33,28)+'</g></g>';
 $('.exit-sign>span')?.remove();
 
 // Door thresholds follow the character's position, in either scroll direction.
