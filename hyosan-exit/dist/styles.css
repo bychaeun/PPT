@@ -341,3 +341,13 @@
 @keyframes footer-calf{0%,100%{transform:rotate(12deg)}25%{transform:rotate(5deg)}50%{transform:rotate(36deg)}70%{transform:rotate(72deg)}85%{transform:rotate(38deg)}}
 @keyframes footer-rise{0%,100%{transform:translateY(1px)}50%{transform:translateY(-1.5px)}}
 @media(prefers-reduced-motion:reduce){.footer-runner *{animation:none!important}}
+
+/* Combination tools are nested under one library menu. */
+.composer-category-group{border-bottom:1px solid var(--line)}
+.composer-category-group>.category{border-bottom:0}
+.composer-submenu{display:flex;gap:8px;padding:0 0 12px 35px}
+.composer-submenu>button{border:1px solid var(--line);border-radius:5px;background:transparent;padding:7px 10px;min-height:0;width:auto;color:var(--muted);font-size:11px;font-weight:500;line-height:1.3}
+.composer-submenu>.category .category-name{font-size:11px;font-weight:500;letter-spacing:0;transform:none}
+.composer-submenu>button[aria-pressed="true"]{color:var(--green);border-color:var(--green);background:#00ad6810}
+@media(min-width:701px){.category-list>.category{min-height:0;padding:clamp(8px,1.4svh,16px) 0}.composer-category-group>.category{min-height:0;padding:clamp(8px,1.4svh,16px) 0}.composer-submenu{padding-bottom:10px}}
+@media(max-width:700px){.composer-category-group{flex:1 0 100%;display:flex;align-items:center;gap:14px;border:0}.composer-category-group>.category{width:auto;flex:none;padding:6px 0}.composer-submenu{padding:0;gap:7px}.composer-submenu>button{padding:6px 8px;font-size:10px}.composer-submenu>.category .category-name{font-size:10px}.category-runner{display:none}}
