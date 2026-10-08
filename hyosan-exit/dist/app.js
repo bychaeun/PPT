@@ -21,7 +21,7 @@ function renderScroll(){
  if(idx!==storyIndex){storyIndex=idx;$('#purpose-title').innerHTML=stories[idx][0];$('.purpose-copy p').innerHTML=stories[idx][1];$('.chapter-fraction').textContent=`0${idx+1} — 03`;}
  renderDoors(reduced.matches?1:sp);
  renderFinale();
- if(!reduced.matches){const journal=$('.journal');const jp=clamp(-journal.getBoundingClientRect().top/(journal.offsetHeight-vh));updateJournal(Math.min(2,Math.floor(jp*3)));}
+ if(!reduced.matches){const journal=$('.journal');const jp=clamp(-journal.getBoundingClientRect().top/(journal.offsetHeight-vh));updateJournal(Math.min(journalData.length-1,Math.floor(jp*journalData.length)));}
 }
 const categories={
  patterns:{name:'패턴 디자인',en:'PATTERN DESIGN',title:'소재를 이해하는 첫 번째 문.',copy:'목재부터 대리석, 스톤, 패브릭까지. 패턴의 특징과 용도를 살펴보고, 관련 LPM과 추천 경면판으로 이어집니다.',route:'패턴 → 관련 LPM → 추천 경면판',filters:['전체','목재','스톤','패브릭'],labels:['우드 패턴','스톤 패턴','패브릭','대리석 패턴','우드 패턴','스톤 패턴'],textures:['wood','stone','fabric','stone','darkwood','stone'],popup:'패턴의 특징과 용도',relation:'관련 LPM · 추천 경면판 ↗'},
@@ -45,17 +45,17 @@ function setCategory(key){if(activeCategory===key)return;activeCategory=key;$('#
 categoryButtons.forEach((button,i)=>{button.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')setCategory(button.dataset.category)});button.addEventListener('focus',()=>setCategory(button.dataset.category));button.addEventListener('click',()=>setCategory(button.dataset.category));button.addEventListener('keydown',e=>{let next;if(e.key==='ArrowDown'||e.key==='ArrowRight')next=(i+1)%categoryButtons.length;if(e.key==='ArrowUp'||e.key==='ArrowLeft')next=(i-1+categoryButtons.length)%categoryButtons.length;if(e.key==='Home')next=0;if(e.key==='End')next=categoryButtons.length-1;if(next!==undefined){e.preventDefault();categoryButtons[next].focus();}});});
 function updateMotion(){document.body.classList.toggle('motion-paused',motionPaused);$('#motion-toggle').textContent=motionPaused?'▷ 모션 재생':'Ⅱ 모션 멈춤';$('#motion-toggle').setAttribute('aria-pressed',String(motionPaused));}
 $('#motion-toggle').addEventListener('click',()=>{motionPaused=!motionPaused;updateMotion();});
-const journalData=[{label:'A SINGLE SOURCE',title:'자료 관리는, Google Sheets로.',copy:'패턴, LPM, 특별넘버, 경면판 자료를 Google Sheets에서 관리합니다. 시트에 정리한 정보는 하나의 백과사전으로 연결되어 PC와 모바일에서 확인할 수 있습니다.',nodes:[['▤','흩어진 자료'],['→',''],['▦','하나의 자료실']]},{label:'CONNECTED KNOWLEDGE',title:'검색 다음에는, 연결.',copy:'패턴에서 LPM으로, LPM에서 경면판으로. 현장에서 적용 스펙으로. 하나의 자료를 찾으면 그다음 필요한 정보로 이어지도록 관계를 연결했습니다.',nodes:[['≋','패턴'],['→',''],['▥','LPM'],['→',''],['▧','경면판']]},{label:'MADE FOR EVERYDAY USE',title:'현장에서 편한 쪽으로.',copy:'휴대폰 홈 화면 추가, 종이번호 복사, 이미지 확대와 영업자료 내보내기. 자주 하는 동작을 다듬고, 캐시와 30분 자동 동기화로 자료를 빠르게 열도록 개선했습니다.',nodes:[['↗','손안의 자료'],['→',''],['⟳','계속 업데이트']]}];let journalIndex=-1;
+const journalData=[{label:'A SINGLE SOURCE',title:'자료 관리는, Google Sheets로.',copy:'패턴, LPM, 특별넘버, 경면판 자료를 Google Sheets에서 관리합니다. 시트에 정리한 정보는 하나의 백과사전으로 연결되어 PC와 모바일에서 확인할 수 있습니다.'},{label:'SCAN TO HEIGHT MAP',title:'스캔한 경면을, 높이맵으로.',copy:'경면을 하나씩 스캔받으면 원래 색과 달리 녹색빛이 돌고 지문이 남아 있었습니다. 이미지마다 직접 지문과 불필요한 흔적을 제거하고, 표면의 결을 살려 높이맵으로 후가공했습니다. 이렇게 일일이 다듬은 자료를 경면 조합에 활용합니다.'}];let journalIndex=-1;
 function updateJournal(idx){
  if(idx===journalIndex)return;
  journalIndex=idx;const d=journalData[idx];
  $('.journal-large-number').textContent=`0${idx+1}`;$('#journal-label').textContent=d.label;$('#journal-detail-title').textContent=d.title;$('#journal-detail-copy').textContent=d.copy;
- $('.sheets-demo').hidden=idx!==0;$('#journal-connections').hidden=idx!==1;$('#journal-refinement').hidden=idx!==2;
+ $('.sheets-demo').hidden=idx!==0;$('#journal-refinement').hidden=idx!==1;
  if(idx!==0&&$('#sheets-player').getAttribute('aria-pressed')==='true')playSheets(false);
  document.querySelectorAll('[data-journal]').forEach(b=>{const active=Number(b.dataset.journal)===idx;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
 }
 
-document.querySelectorAll('[data-journal]').forEach(b=>b.addEventListener('click',()=>{const idx=Number(b.dataset.journal);if(reduced.matches){updateJournal(idx);return;}const el=$('.journal');scrollTo({top:el.offsetTop+(el.offsetHeight-innerHeight)*(idx/3+.05),behavior:'smooth'});}));
+document.querySelectorAll('[data-journal]').forEach(b=>b.addEventListener('click',()=>{const idx=Number(b.dataset.journal);if(reduced.matches){updateJournal(idx);return;}const el=$('.journal');scrollTo({top:el.offsetTop+(el.offsetHeight-innerHeight)*(idx/journalData.length+.05),behavior:'smooth'});}));
 document.documentElement.classList.add('js-ready');const reveals=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');reveals.unobserve(e.target);}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>reveals.observe(el));
 const demoVisibility=new IntersectionObserver(entries=>{const visible=entries[0].isIntersecting;$('#demo-browser').classList.toggle('offscreen',!visible);},{threshold:0});demoVisibility.observe($('#demo-browser'));
 addEventListener('scroll',()=>{if(!scheduled){scheduled=true;requestAnimationFrame(renderScroll)}},{passive:true});addEventListener('resize',()=>{renderScroll();positionRunner();});reduced.addEventListener('change',()=>{motionPaused=reduced.matches;updateMotion();renderScroll();});
@@ -153,19 +153,10 @@ let cheerTimer;
 $('#journal-character').addEventListener('click',()=>{
  const character=$('#journal-character');character.classList.remove('is-cheering');void character.offsetWidth;character.classList.add('is-cheering');
  clearTimeout(cheerTimer);cheerTimer=setTimeout(()=>character.classList.remove('is-cheering'),850);
- document.querySelector(`[data-journal="${(journalIndex+1)%3}"]`).click();
+ document.querySelector(`[data-journal="${(journalIndex+1)%journalData.length}"]`).click();
 });
-document.querySelectorAll('[data-connection]').forEach(button=>button.addEventListener('click',()=>{
- const key=button.dataset.connection;
- const labels={patterns:['패턴','패턴의 특징에서 관련 제품으로.'],lpm:['LPM','제품 정보에서 어울리는 경면판으로.'],emboss:['경면판','표면의 특징까지, 연결해서 확인합니다.']};
- $('#connection-capture').src=`captures/${key==='emboss'?'emboss-hl-detail':key+'-detail'}.jpg`;$('#connection-capture').alt=`실제 앱의 ${labels[key][0]} 상세 화면`;$('#connection-caption').textContent=labels[key][1];
- document.querySelectorAll('[data-connection]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
-}));
-const refinementCopy=['휴대폰 홈 화면에서, 자료실을 바로 엽니다.','종이번호를 복사하고, 필요한 영업자료를 꺼냅니다.','캐시와 30분 자동 동기화로 자료를 빠르게 확인합니다.'];
-document.querySelectorAll('[data-refinement]').forEach(button=>button.addEventListener('click',()=>{
- $('#refinement-caption').textContent=refinementCopy[Number(button.dataset.refinement)];
- document.querySelectorAll('[data-refinement]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
-}));
+const scanFrames=[['indigo-material','상원 인디고 실물 경면','실물 경면의 색과 결을 확인하는 것부터 시작했습니다.'],['indigo-scan','녹색빛과 지문이 남은 상원 인디고 스캔','스캔받은 이미지에는 녹색빛이 돌고 지문이 남아 있었습니다.'],['indigo-cleaned','상원 인디고 지문 제거 후 이미지','이미지마다 직접 지문과 불필요한 흔적을 하나씩 제거했습니다.'],['indigo-heightmap','상원 인디고 높이맵 후가공 결과','표면의 결을 살려 높이맵으로 일일이 후가공했습니다.']];
+document.querySelectorAll('[data-scan]').forEach(button=>button.addEventListener('click',()=>{const frame=scanFrames[Number(button.dataset.scan)];$('#scan-capture').src='captures/'+frame[0]+'.jpg';$('#scan-capture').alt=frame[1];$('#scan-caption').textContent=frame[2];document.querySelectorAll('[data-scan]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});}));
 function burstFireworks(){
  const stage=$('.finale-fireworks');if(!stage||reduced.matches)return;stage.replaceChildren();
  [22,78].forEach((x,side)=>{

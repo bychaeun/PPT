@@ -358,3 +358,20 @@
 .motion-paused .actual-screen #actual-detail,.demo-browser.offscreen .actual-screen #actual-detail{animation-play-state:paused!important}
 @media(max-width:700px){.composer-category-group{flex:0 1 auto}.composer-category-group>.category{padding:6px 0}}
 @media(prefers-reduced-motion:reduce){.composer-sequence .actual-screen #actual-detail{animation:none!important;opacity:0}}
+
+/* Real scanned materials show the work behind the surface library. */
+.scan-steps{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 12px;flex-shrink:0;color:#8da597}
+.scan-steps button{border:1px solid #d5e3d5;background:#f2f6ef;color:#809787;font-size:11px;padding:9px 12px;border-radius:5px}
+.scan-steps button.active{background:var(--green);color:white;border-color:var(--green)}
+.scan-screen{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin:0 14px;background:#f1f2ed;overflow:hidden}
+.scan-screen img{width:100%;height:100%;object-fit:contain;display:block}
+@media(min-width:701px){.scan-screen{height:0}}
+@media(max-width:700px){.scan-steps{gap:5px;padding:10px 8px}.scan-steps button{font-size:9px;padding:7px 8px}.scan-screen{height:min(30svh,290px);flex:none;margin:0 10px}.journal-refinement .journal-art-caption{gap:10px}}
+
+.scan-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:12px 14px}
+.scan-steps button{padding:5px;overflow:hidden;font-size:9px;background:#f5f7f0}
+.scan-steps button img{display:block;width:100%;height:48px;object-fit:cover;border-radius:3px;margin-bottom:6px}
+.scan-steps button span{display:block;white-space:nowrap;padding-bottom:2px}
+.scan-steps button.active{background:var(--green)}
+.journal-refinement .journal-art-caption{line-height:1.65}
+@media(max-width:700px){.scan-steps{gap:5px;padding:10px}.scan-steps button{font-size:8px;padding:4px}.scan-steps button img{height:36px;margin-bottom:5px}.scan-screen{height:min(27svh,280px)}.journal-refinement .journal-art-caption>span:last-child{display:none}}
