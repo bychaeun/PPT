@@ -351,3 +351,10 @@
 .composer-submenu>button[aria-pressed="true"]{color:var(--green);border-color:var(--green);background:#00ad6810}
 @media(min-width:701px){.category-list>.category{min-height:0;padding:clamp(8px,1.4svh,16px) 0}.composer-category-group>.category{min-height:0;padding:clamp(8px,1.4svh,16px) 0}.composer-submenu{padding-bottom:10px}}
 @media(max-width:700px){.composer-category-group{flex:1 0 100%;display:flex;align-items:center;gap:14px;border:0}.composer-category-group>.category{width:auto;flex:none;padding:6px 0}.composer-submenu{padding:0;gap:7px}.composer-submenu>button{padding:6px 8px;font-size:10px}.composer-submenu>.category .category-name{font-size:10px}.category-runner{display:none}}
+
+/* One combination menu previews the two tools in sequence. */
+.composer-sequence .actual-screen #actual-detail{animation:composer-sequence 4s steps(1,end) infinite}
+@keyframes composer-sequence{0%,49.999%{opacity:0}50%,100%{opacity:1}}
+.motion-paused .actual-screen #actual-detail,.demo-browser.offscreen .actual-screen #actual-detail{animation-play-state:paused!important}
+@media(max-width:700px){.composer-category-group{flex:0 1 auto}.composer-category-group>.category{padding:6px 0}}
+@media(prefers-reduced-motion:reduce){.composer-sequence .actual-screen #actual-detail{animation:none!important;opacity:0}}
