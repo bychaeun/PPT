@@ -156,7 +156,7 @@ $('#journal-character').addEventListener('click',()=>{
  document.querySelector(`[data-journal="${(journalIndex+1)%journalData.length}"]`).click();
 });
 const scanFrames=[['indigo-material','상원 인디고 실물 경면','실물 경면의 색과 결을 확인하는 것부터 시작했습니다.'],['indigo-scan','녹색빛과 지문이 남은 상원 인디고 스캔','스캔받은 이미지에는 녹색빛이 돌고 지문이 남아 있었습니다.'],['indigo-cleaned','상원 인디고 지문 제거 후 이미지','이미지마다 직접 지문과 불필요한 흔적을 하나씩 제거했습니다.'],['indigo-heightmap','상원 인디고 높이맵 후가공 결과','표면의 결을 살려 높이맵으로 일일이 후가공했습니다.']];
-document.querySelectorAll('[data-scan]').forEach(button=>button.addEventListener('click',()=>{const frame=scanFrames[Number(button.dataset.scan)];$('#scan-capture').src='captures/'+frame[0]+'.jpg';$('#scan-capture').alt=frame[1];$('#scan-caption').textContent=frame[2];document.querySelectorAll('[data-scan]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});}));
+document.querySelectorAll('[data-scan]').forEach(button=>button.addEventListener('click',()=>{const frame=scanFrames[Number(button.dataset.scan)];$('#scan-capture').classList.toggle('material-crop',button.dataset.scan==='0');$('#scan-capture').src='captures/'+frame[0]+'.jpg';$('#scan-capture').alt=frame[1];$('#scan-caption').textContent=frame[2];document.querySelectorAll('[data-scan]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});}));
 function burstFireworks(){
  const stage=$('.finale-fireworks');if(!stage||reduced.matches)return;stage.replaceChildren();
  [22,78].forEach((x,side)=>{

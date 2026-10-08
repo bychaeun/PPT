@@ -375,3 +375,6 @@
 .scan-steps button.active{background:var(--green)}
 .journal-refinement .journal-art-caption{line-height:1.65}
 @media(max-width:700px){.scan-steps{gap:5px;padding:10px}.scan-steps button{font-size:8px;padding:4px}.scan-steps button img{height:36px;margin-bottom:5px}.scan-screen{height:min(27svh,280px)}.journal-refinement .journal-art-caption>span:last-child{display:none}}
+
+/* Crop the physical sample to fill the wide comparison frame. */
+.scan-screen img.material-crop{object-fit:cover;object-position:50% 49%;transform:scale(1.12)}
